@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/suzuki-shunsuke/go-set"
+  packages = ["."]
+  revision = "da1b606a340badfdd16b2681e1e3b6b4d36210c2"
+  version = "v2.3.4"
+
+[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -10,6 +16,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "df4a79a3008603763e1d51475bb94e1290af5af71be4761ef9369093fcce7009"
+  inputs-digest = "3429dff11d872adfdf65454ba25f71ebb0ee6472294d76db8fbbe75861e87106"
   solver-name = "gps-cdcl"
   solver-version = 1

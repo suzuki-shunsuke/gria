@@ -25,9 +25,15 @@ func (f Func) TestFileName() string {
 		f.FileName[:len(f.FileName)-len(filepath.Ext(f.FileName))])
 }
 
+func (f Func) TestFuncName() string {
+	return fmt.Sprintf("Test%s", f.Name)
+}
+
 func (f Func) TestCode() string {
-	return fmt.Sprintf(`func Test%s%s(t *testing.T) {
-}`, f.StructName, f.Name)
+	return fmt.Sprintf(`
+func Test%s%s(t *testing.T) {
+}
+`, f.StructName, f.Name)
 }
 
 func (f Func) IsTest() bool {
