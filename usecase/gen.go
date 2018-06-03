@@ -16,10 +16,6 @@ import (
 	"github.com/suzuki-shunsuke/gria/domain"
 )
 
-func isExposed(name string) bool {
-	return len(name) != 0 && name[:1] == strings.ToUpper(name[:1])
-}
-
 func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.StrSet) {
 	funcs := []domain.Func{}
 	testFuncs := domain.Funcs{Names: map[string]map[string]domain.Func{}}
@@ -34,10 +30,6 @@ func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.S
 				// filter function
 				if ident, ok := n.(*ast.FuncDecl); ok {
 					fName := ident.Name.Name
-					// ignore unexposed function
-					if !isExposed(fName) {
-						return true
-					}
 					// get struct name
 					structName := ""
 					if ident.Recv != nil {
