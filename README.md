@@ -5,7 +5,7 @@ CLI tool for golang's test code scaffolding.
 ## Overview
 
 gria is CLI tool for golang's test code scaffolding.
-Parse files and packages with [go/ast](https://golang.org/pkg/go/ast) and generate test functions skeltons.
+Parse packages with [go/ast](https://golang.org/pkg/go/ast) and generate test functions skeltons.
 
 ## Getting Started
 
@@ -21,10 +21,10 @@ func Foo() string {
 }
 ```
 
-Then run `gria gen`.
+Then run `gria`.
 
 ```
-$ gria gen foo.go
+$ gria .
 create a test file: foo_test.go
 ```
 
@@ -59,10 +59,10 @@ func (user User) GetName() string {
 }
 ```
 
-Then run `gria gen` again.
+Then run `gria` again.
 
 ```
-$ gria gen foo.go
+$ gria .
 add a test skelton code to a test file: foo_test.go
 ```
 
@@ -97,25 +97,6 @@ Check whether gria is installed.
 ```
 $ gria -v
 gria version 0.1.0
-```
-
-## Usage
-
-## Configuration
-
-```yaml
----
-ignore_unexposed: false  # ignore unexposed functions
-func_name: Test{{.StructName}}{{.Name}}  # test function name
-includes:  # white list
-excludes:  # black list
-- foo # ignore package
-- zoo/bar.go # ignore file
-- "config/config.go:GetName" # ignore function
-- "config/config.go:User.GetName" # ignore method
-- "config/config.go:User.Get*" # glob
-- "config/config.go:Foo" # ignore struct
-- "config:Bar" # ignore struct
 ```
 
 ## License

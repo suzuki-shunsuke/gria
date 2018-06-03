@@ -124,11 +124,9 @@ func Gen(args domain.GenArgs) error {
 	}
 	fset := token.NewFileSet()
 	pkgPaths := []string{}
-	// filePaths := []string{}
 	for _, arg := range args.Targets {
 		if filepath.Ext(arg) == ".go" {
-			// filePaths = append(filePaths, arg)
-			continue
+			return fmt.Errorf("argument must not be file but directory: %s", arg)
 		}
 		pkgPaths = append(pkgPaths, arg)
 	}
