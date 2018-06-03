@@ -17,6 +17,10 @@ type (
 		// func name -> package name -> func
 		Names map[string]map[string]Func
 	}
+	// GenArgs is arguments of usecase.Gen function.
+	GenArgs struct {
+		Targets []string
+	}
 )
 
 func (f Func) TestFileName() string {

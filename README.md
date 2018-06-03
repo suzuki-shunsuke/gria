@@ -105,16 +105,17 @@ gria version 0.1.0
 
 ```yaml
 ---
-ignore_unxposed: false  # ignore unexposed functions
+ignore_unexposed: false  # ignore unexposed functions
 func_name: Test{{.StructName}}{{.Name}}  # test function name
 includes:  # white list
 excludes:  # black list
-  foo: # ignore package
-  zoo/bar.go: # ignore file
-  config/config.go:
-  - GetName # ignore function
-  - User.GetAge # ignore method
-  - Foo # ignore struct
+- foo # ignore package
+- zoo/bar.go # ignore file
+- "config/config.go:GetName" # ignore function
+- "config/config.go:User.GetName" # ignore method
+- "config/config.go:User.Get*" # glob
+- "config/config.go:Foo" # ignore struct
+- "config:Bar" # ignore struct
 ```
 
 ## License
