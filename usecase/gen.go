@@ -5,8 +5,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -16,6 +14,7 @@ import (
 	"github.com/suzuki-shunsuke/gria/domain"
 )
 
+// GetFuncs extracts target functions and existing test functions and test file paths from given packages.
 func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.StrSet) {
 	funcs := []domain.Func{}
 	testFuncs := domain.Funcs{Names: map[string]map[string]domain.Func{}}
@@ -56,6 +55,7 @@ func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.S
 	return funcs, testFuncs, testFileNameSet
 }
 
+// GetCodes returns added test codes to each test files.
 func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet *set.StrSet) map[string]string {
 	// file name -> appended test code
 	addedCodes := map[string]string{}
@@ -85,25 +85,20 @@ import (
 	return addedCodes
 }
 
-func WriteCodes(addedCodes map[string]string, testFileNameSet *set.StrSet) error {
+// WriteCodes writes test codes to test files.
+func WriteCodes(addedCodes map[string]string, testFileNameSet *set.StrSet, fileWriter domain.FileWriter) error {
 	for fName, code := range addedCodes {
 		if testFileNameSet.Has(fName) {
 			// append
-			f, err := os.OpenFile(fName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("failed to open file: %s", fName))
-			}
-			defer f.Close()
-			fmt.Printf("add a test skelton code to a test file: %s\n", fName)
-			if _, err := f.Write([]byte(code)); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("failed to write file: %s", fName))
+			if err := fileWriter.Append(fName, []byte(code)); err != nil {
+				return err
 			}
 			continue
 		}
 		// create
 		fmt.Printf("create a test file: %s\n", fName)
-		if err := ioutil.WriteFile(fName, []byte(code), 0644); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("failed to create test file: %s", fName))
+		if err := fileWriter.Create(fName, []byte(code)); err != nil {
+			return err
 		}
 	}
 	return nil
@@ -114,15 +109,13 @@ func Gen(args domain.GenArgs) error {
 	if len(args.Targets) == 0 {
 		return nil
 	}
-	fset := token.NewFileSet()
-	pkgPaths := []string{}
 	for _, arg := range args.Targets {
 		if filepath.Ext(arg) == ".go" {
 			return fmt.Errorf("argument must not be file but directory: %s", arg)
 		}
-		pkgPaths = append(pkgPaths, arg)
 	}
-	for _, p := range pkgPaths {
+	fset := token.NewFileSet()
+	for _, p := range args.Targets {
 		pkgs, err := parser.ParseDir(fset, p, nil, parser.Mode(0))
 		if err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to parse package: %s", p))
@@ -130,7 +123,7 @@ func Gen(args domain.GenArgs) error {
 		funcs, testFuncs, testFileNameSet := GetFuncs(pkgs)
 
 		addedCodes := GetCodes(funcs, testFuncs, testFileNameSet)
-		if err := WriteCodes(addedCodes, testFileNameSet); err != nil {
+		if err := WriteCodes(addedCodes, testFileNameSet, args.FileWriter); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to write test files of package %s", p))
 		}
 	}

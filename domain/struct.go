@@ -19,7 +19,8 @@ type (
 	}
 	// GenArgs is arguments of usecase.Gen function.
 	GenArgs struct {
-		Targets []string
+		Targets    []string
+		FileWriter FileWriter
 	}
 )
 
