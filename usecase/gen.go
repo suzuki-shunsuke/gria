@@ -32,7 +32,12 @@ func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.S
 					// get struct name
 					structName := ""
 					if ident.Recv != nil {
-						structName = fmt.Sprintf("%v", ident.Recv.List[0].Type)
+						expr := ident.Recv.List[0].Type
+						if p, ok := expr.(*ast.StarExpr); ok {
+							structName = fmt.Sprintf("%v", p.X)
+						} else {
+							structName = fmt.Sprintf("%v", expr)
+						}
 					}
 					fnc := domain.Func{
 						Name:        fName,
