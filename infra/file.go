@@ -9,9 +9,11 @@ import (
 )
 
 type (
+	// FileWriter implements the domain.FileWriter interface.
 	FileWriter struct{}
 )
 
+// Append implements the domain.FileWriter interface.
 func (writer FileWriter) Append(dest string, data []byte) error {
 	f, err := os.OpenFile(dest, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -25,6 +27,7 @@ func (writer FileWriter) Append(dest string, data []byte) error {
 	return nil
 }
 
+// Create implements the domain.FileWriter interface.
 func (writer FileWriter) Create(dest string, data []byte) error {
 	if err := ioutil.WriteFile(dest, data, 0644); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("failed to create test file: %s", dest))
