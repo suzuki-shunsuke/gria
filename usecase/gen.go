@@ -17,7 +17,7 @@ import (
 // GetFuncs extracts target functions and existing test functions and test file paths from given packages.
 func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.StrSet) {
 	funcs := []domain.Func{}
-	testFuncs := domain.Funcs{Names: map[string]map[string]domain.Func{}}
+	testFuncs := domain.CreateFuncs()
 	testFileNameSet := set.NewStrSet()
 	for pkgName, pkg := range pkgs {
 		for fileName, f := range pkg.Files {
@@ -61,38 +61,22 @@ func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.S
 }
 
 // GetCodes returns added test codes to each test files.
-func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet *set.StrSet) map[string]string {
+func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet *set.StrSet) domain.AddedCodes {
 	// file name -> appended test code
-	addedCodes := map[string]string{}
+	addedCodes := domain.CreateAddedCodes(testFileNameSet)
 	// generate test codes
 	for _, f := range funcs {
-		if _, ok := testFuncs.Names[f.TestFuncName()]; ok {
+		if testFuncs.HasTest(f) {
 			continue
 		}
-		if m, ok := addedCodes[f.TestFileName()]; ok {
-			m += f.TestCode()
-			addedCodes[f.TestFileName()] = m
-			continue
-		}
-		if testFileNameSet.Has(f.TestFileName()) {
-			// append
-			addedCodes[f.TestFileName()] = f.TestCode()
-			continue
-		}
-		// create
-		addedCodes[f.TestFileName()] = fmt.Sprintf(`package %s
-
-import (
-	"testing"
-)
-%s`, f.PackageName, f.TestCode())
+		addedCodes.Add(f)
 	}
 	return addedCodes
 }
 
 // WriteCodes writes test codes to test files.
-func WriteCodes(addedCodes map[string]string, testFileNameSet *set.StrSet, fileWriter domain.FileWriter) error {
-	for fName, code := range addedCodes {
+func WriteCodes(addedCodes domain.AddedCodes, testFileNameSet *set.StrSet, fileWriter domain.FileWriter) error {
+	for fName, code := range addedCodes.Codes {
 		if testFileNameSet.Has(fName) {
 			// append
 			if err := fileWriter.Append(fName, []byte(code)); err != nil {
@@ -126,7 +110,6 @@ func Gen(args domain.GenArgs) error {
 			return errors.Wrap(err, fmt.Sprintf("failed to parse package: %s", p))
 		}
 		funcs, testFuncs, testFileNameSet := GetFuncs(pkgs)
-
 		addedCodes := GetCodes(funcs, testFuncs, testFileNameSet)
 		if err := WriteCodes(addedCodes, testFileNameSet, args.FileWriter); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to write test files of package %s", p))

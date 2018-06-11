@@ -9,7 +9,7 @@ Parse packages with [go/ast](https://golang.org/pkg/go/ast) and generate test fu
 
 ## Getting Started
 
-First, [install gria]().
+First, [install gria](#install).
 
 Create a sample code `foo.go`.
 
@@ -82,7 +82,7 @@ func TestUserGetName(t *testing.T) {
 }
 ```
 
-Notice the existing code is not overwritten.
+Note the existing code is not overwritten.
 
 ## Install
 
@@ -97,6 +97,36 @@ Check whether gria is installed.
 ```
 $ gria -v
 gria version 0.1.0
+```
+
+## Usage
+
+Show help.
+
+```
+$ gria --h
+$ gria --help
+$ gria h
+$ gria help
+```
+
+Show version.
+
+```
+$ gria -v
+$ gria --version
+```
+
+Generate tests.
+
+```
+$ gria <package_directory_path> [<package_directory_path> ...]
+```
+
+If you want to pass packages recursively, use `go list`.
+
+```
+$ go list -f "{{.Dir}}" ./... | xargs gria
 ```
 
 ## License
