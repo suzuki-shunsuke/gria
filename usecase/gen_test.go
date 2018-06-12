@@ -19,7 +19,7 @@ func TestGetCodes(t *testing.T) {
 		FileName:    "./infra/file.go",
 		PackageName: "infra",
 	}}
-	testFuncs := domain.CreateFuncs()
+	testFuncs := domain.Funcs{}
 	testFuncs.Add(domain.Func{
 		Name:        "TestFileWriterAppend",
 		StructName:  "",

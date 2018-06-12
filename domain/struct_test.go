@@ -57,18 +57,14 @@ func TestFuncIsTestFile(t *testing.T) {
 
 func TestFuncsAdd(t *testing.T) {
 	f := Func{PackageName: "p", Name: "Foo", FileName: "foo.go"}
-	funcs := CreateFuncs()
+	funcs := Funcs{}
 	funcs.Add(f)
-	funcs = Funcs{Names: map[string]map[string]Func{"Foo": {}}}
+	funcs = Funcs{"Foo": {}}
 	funcs.Add(f)
-}
-
-func TestCreateFuncs(t *testing.T) {
-	CreateFuncs()
 }
 
 func TestFuncsHasTest(t *testing.T) {
-	funcs := CreateFuncs()
+	funcs := Funcs{}
 	f := Func{PackageName: "p", Name: "Foo", FileName: "foo.go"}
 	if funcs.HasTest(f) {
 		t.Fatal("funcs.HasTest(f) = true, wanted false")

@@ -15,9 +15,14 @@ import (
 )
 
 // GetFuncs extracts target functions and existing test functions and test file paths from given packages.
-func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.StrSet) {
+func GetFuncs(pkgPath string) ([]domain.Func, domain.Funcs, set.StrSet, error) {
+	fset := token.NewFileSet()
+	pkgs, err := parser.ParseDir(fset, pkgPath, nil, parser.Mode(0))
+	if err != nil {
+		return nil, nil, nil, errors.Wrap(err, fmt.Sprintf("failed to parse package: %s", pkgPath))
+	}
 	funcs := []domain.Func{}
-	testFuncs := domain.CreateFuncs()
+	testFuncs := domain.Funcs{}
 	testFileNameSet := set.NewStrSet()
 	for pkgName, pkg := range pkgs {
 		for fileName, f := range pkg.Files {
@@ -57,11 +62,11 @@ func GetFuncs(pkgs map[string]*ast.Package) ([]domain.Func, domain.Funcs, *set.S
 			})
 		}
 	}
-	return funcs, testFuncs, testFileNameSet
+	return funcs, testFuncs, testFileNameSet, nil
 }
 
 // GetCodes returns added test codes to each test files.
-func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet *set.StrSet) domain.AddedCodes {
+func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet set.StrSet) domain.AddedCodes {
 	// file name -> appended test code
 	addedCodes := domain.CreateAddedCodes(testFileNameSet)
 	// generate test codes
@@ -75,7 +80,7 @@ func GetCodes(funcs []domain.Func, testFuncs domain.Funcs, testFileNameSet *set.
 }
 
 // WriteCodes writes test codes to test files.
-func WriteCodes(addedCodes domain.AddedCodes, testFileNameSet *set.StrSet, fileWriter domain.FileWriter) error {
+func WriteCodes(addedCodes domain.AddedCodes, testFileNameSet set.StrSet, fileWriter domain.FileWriter) error {
 	for fName, code := range addedCodes.Codes {
 		if testFileNameSet.Has(fName) {
 			// append
@@ -98,18 +103,17 @@ func Gen(args domain.GenArgs) error {
 	if len(args.Targets) == 0 {
 		return nil
 	}
-	for _, arg := range args.Targets {
+	targets := set.NewStrSet(args.Targets...)
+	for arg := range targets {
 		if filepath.Ext(arg) == ".go" {
 			return fmt.Errorf("argument must not be file but directory: %s", arg)
 		}
 	}
-	fset := token.NewFileSet()
-	for _, p := range args.Targets {
-		pkgs, err := parser.ParseDir(fset, p, nil, parser.Mode(0))
+	for p := range targets {
+		funcs, testFuncs, testFileNameSet, err := GetFuncs(p)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("failed to parse package: %s", p))
+			return err
 		}
-		funcs, testFuncs, testFileNameSet := GetFuncs(pkgs)
 		addedCodes := GetCodes(funcs, testFuncs, testFileNameSet)
 		if err := WriteCodes(addedCodes, testFileNameSet, args.FileWriter); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("failed to write test files of package %s", p))

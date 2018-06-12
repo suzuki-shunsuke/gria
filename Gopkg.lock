@@ -2,10 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/suzuki-shunsuke/go-set"
   packages = ["."]
-  revision = "da1b606a340badfdd16b2681e1e3b6b4d36210c2"
-  version = "v2.3.4"
+  revision = "ddef84619d1eda07e2b2f659fe679644f01cfd05"
+  version = "v4.0.0"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -16,6 +22,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3429dff11d872adfdf65454ba25f71ebb0ee6472294d76db8fbbe75861e87106"
+  inputs-digest = "2d07c24729f10a0b547e226a847e11b2f97d5d9885af0f8c1c0f509a26fe411c"
   solver-name = "gps-cdcl"
   solver-version = 1
