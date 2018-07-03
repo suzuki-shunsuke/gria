@@ -3,3 +3,4 @@ dummy
 node_modules
 dist
 coverage
+coverage.txt
