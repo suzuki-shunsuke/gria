@@ -56,6 +56,10 @@ func GetFuncs(pkgPath string) ([]domain.Func, domain.Funcs, set.StrSet, error) {
 						}
 						return true
 					}
+					// ignore init functions
+					if fnc.StructName == "" && fnc.Name == "init" {
+						return true
+					}
 					funcs = append(funcs, fnc)
 				}
 				return true
