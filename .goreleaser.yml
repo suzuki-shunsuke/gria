@@ -9,9 +9,3 @@ builds:
   - linux
   goarch:
   - amd64
-archive:
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    amd64: x86_64
