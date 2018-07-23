@@ -6,13 +6,11 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "bash script/test.sh",
     "fmt": "bash script/fmt.sh",
-    "coverage": "bash script/coverage.sh",
-    "commitlint-travis": "commitlint-travis"
+    "c": "bash script/coverage.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.1.3",
-    "@commitlint/config-conventional": "^6.1.3",
-    "@commitlint/travis-cli": "^6.1.3",
+    "@commitlint/config-angular": "^6.1.3",
     "husky": "^0.14.3",
     "standard-version": "^4.3.0"
   }
