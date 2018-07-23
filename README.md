@@ -1,7 +1,7 @@
 # Gria
 
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/suzuki-shunsuke/gria)
-[![Build Status](https://travis-ci.org/suzuki-shunsuke/gria.svg?branch=master)](https://travis-ci.org/suzuki-shunsuke/gria)
+[![CircleCI](https://circleci.com/gh/suzuki-shunsuke/gria.svg?style=svg)](https://circleci.com/gh/suzuki-shunsuke/gria)
 [![codecov](https://codecov.io/gh/suzuki-shunsuke/gria/branch/master/graph/badge.svg)](https://codecov.io/gh/suzuki-shunsuke/gria)
 [![Go Report Card](https://goreportcard.com/badge/github.com/suzuki-shunsuke/gria)](https://goreportcard.com/report/github.com/suzuki-shunsuke/gria)
 [![GitHub last commit](https://img.shields.io/github/last-commit/suzuki-shunsuke/gria.svg)](https://github.com/suzuki-shunsuke/gria)
