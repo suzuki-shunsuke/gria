@@ -27,6 +27,20 @@ func TestFuncTestFuncName(t *testing.T) {
 	if act != exp {
 		t.Fatalf("%s != %s", act, exp)
 	}
+
+	f = Func{Name: "foo"}
+	act = f.TestFuncName()
+	exp = "Test_foo"
+	if act != exp {
+		t.Fatalf("%s != %s", act, exp)
+	}
+
+	f = Func{Name: "foo", StructName: "bar"}
+	act = f.TestFuncName()
+	exp = "Test_barfoo"
+	if act != exp {
+		t.Fatalf("%s != %s", act, exp)
+	}
 }
 
 func TestFuncTestCode(t *testing.T) {

@@ -44,7 +44,11 @@ func (f *Func) TestFileName() string {
 
 // TestFuncName returns a test function name.
 func (f *Func) TestFuncName() string {
-	return fmt.Sprintf("Test%s%s", f.StructName, f.Name)
+	a := fmt.Sprintf("%s%s", f.StructName, f.Name)
+	if a != strings.Title(a) {
+		a = fmt.Sprintf("_%s", a)
+	}
+	return fmt.Sprintf("Test%s", a)
 }
 
 // TestCode returns the boilerplate of test function.
