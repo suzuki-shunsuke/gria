@@ -25,6 +25,10 @@ func GetFuncs(pkgPath string) ([]domain.Func, domain.Funcs, set.StrSet, error) {
 	testFuncs := domain.Funcs{}
 	testFileNameSet := set.NewStrSet()
 	for pkgName, pkg := range pkgs {
+		// ignore main package
+		if pkgName == "main" {
+			continue
+		}
 		for fileName, f := range pkg.Files {
 			// judge test file by file name
 			if strings.HasSuffix(fileName, "_test.go") {
