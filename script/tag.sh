@@ -18,12 +18,20 @@ cd `dirname $0`/..
 
 TAG=$1
 echo "TAG: $TAG"
+
+VERSION=${TAG#v}
+
+if [ "$TAG" = "$VERSION" ]; then
+  echo "TAG must start with 'v'"
+  exit 1
+fi
+
 echo "create domain/version.go"
 cat << EOS > domain/version.go
 package domain
 
 // Version is the gria's version.
-const Version = "$TAG"
+const Version = "$VERSION"
 EOS
 
 git add domain/version.go
